@@ -1,0 +1,174 @@
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgb(0 0 0 / 20%);
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+}
+
+svg {
+  &:focus {
+    outline: none !important;
+  }
+}
+
+.arco-modal {
+  .arco-modal-header {
+    background: linear-gradient(180deg, #2e66c730 0%, #fff0 100%);
+    height: 60px;
+    border-bottom: none;
+
+    .arco-modal-title {
+      color: #333;
+      font-size: 16px;
+      font-weight: 600;
+    }
+  }
+
+  .arco-modal-body {
+    padding: 10px 28px;
+    max-height: 70vh;
+  }
+
+  &.arco-modal-fullscreen {
+    .arco-modal-body {
+      padding: 10px;
+      max-height: calc(100vh - 68px);
+    }
+  }
+
+  .arco-modal-footer {
+    border-top: none;
+    display: flex;
+    justify-content: center;
+    padding: 14px;
+
+    .arco-btn {
+      width: 124px;
+      height: 36px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .arco-btn-primary {
+      background-color: #2e66c7;
+
+      &:hover {
+        background-color: rgb(46 102 199 / 80%);
+      }
+    }
+
+    .arco-btn-secondary {
+      border: 1px solid #2e66c7;
+      color: #2e66c7;
+
+      &:hover {
+        border-color: rgb(46 102 199 / 80%);
+        color: rgb(46 102 199 / 80%);
+      }
+    }
+
+    .arco-space {
+      display: flex;
+      flex-direction: row-reverse;
+      gap: 24px;
+    }
+  }
+}
+
+.phone-verification-modal {
+  border-radius: 10px !important;
+  // 添加阴影
+  box-shadow: 0 0 10px 0 rgb(0 0 0 / 10%);
+
+  .arco-modal-header {
+    border-radius: 10px 10px 0 0 !important;
+  }
+}
+
+.arco-input-wrapper,
+.arco-select,
+.arco-picker {
+  background-color: #fff !important;
+  border: 1px solid rgb(153 153 153 / 20%) !important;
+  border-radius: 4px !important;
+  min-height: 36px !important;
+}
+
+.arco-textarea {
+  background-color: #fff !important;
+  border: 1px solid rgb(153 153 153 / 20%) !important;
+  border-radius: 4px !important;
+}
+
+.arco-btn {
+  border-radius: 4px !important;
+
+  &.arco-btn-secondary {
+    background-color: transparent !important;
+  }
+}
+
+.arco-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 10% 0 !important;
+}
+
+.arco-scrollbar-track-direction-horizontal {
+  height: 8px !important;
+
+  .arco-scrollbar-thumb-bar {
+    height: 4px !important;
+    margin: 1px 0 !important;
+  }
+}
+
+.arco-link.arco-link-disabled {
+  color: #d8d8d8 !important;
+}
+
+// 日期快捷键
+.arco-picker-range-container {
+  .arco-btn-secondary {
+    color: #2f73e7 !important;
+
+    &:hover {
+      background-color: #2f73e7 !important;
+      color: #fff !important;
+    }
+  }
+}
+
+.arco-tooltip-content {
+  max-height: 35vh !important;
+  overflow-y: auto !important;
+  // text-align: justify !important;
+}
+
+// 隐藏ai编辑器底部
+aie-footer {
+  display: none !important;
+}

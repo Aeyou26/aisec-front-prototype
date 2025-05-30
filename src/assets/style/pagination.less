@@ -1,0 +1,47 @@
+/* 分页样式重写 */
+.arco-pagination {
+  display: flex;
+  position: relative;
+  justify-content: flex-end;
+  width: 100%;
+  padding: 0 24px 0 100px;
+
+  .arco-pagination-item-active,
+  .arco-pagination-item-active:hover {
+    background: #2f73e7;
+    color: #fff;
+  }
+
+  .arco-pagination-total {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 12px;
+    align-items: center;
+  }
+
+  .arco-select-view-single,
+  .arco-input-wrapper {
+    border-radius: 0;
+  }
+
+  .arco-select-view-value,
+  .arco-pagination-total,
+  .arco-pagination-item {
+    font-size: 14px;
+  }
+
+  .arco-pagination-item {
+    border-radius: 0;
+  }
+
+  .arco-pagination-jumper {
+    margin-left: 24px;
+    gap: 8px;
+  }
+
+  .arco-pagination-jumper::after {
+    color: #86909c;
+    content: '页';
+  }
+}
