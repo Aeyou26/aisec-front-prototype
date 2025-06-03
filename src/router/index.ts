@@ -27,7 +27,7 @@ const rootRoutes = [
   {
     path: '/',
     name: 'index',
-    redirect: '/dashboard'
+    redirect: '/home'
   }
 ]
 

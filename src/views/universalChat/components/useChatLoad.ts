@@ -251,12 +251,18 @@ export default function useChatLoad(api: any, params = {}, replyCallback?: () =>
         replyCallback && replyCallback()
       }
     } else if (replay.code === 4001) {
-      console.log('replay.code', replay.code)
-      // 未登录处理
+      // 原型模式：跳过登录检查
+      const isPrototypeMode = localStorage.getItem('prototype-mode') === 'true'
+      if (isPrototypeMode) {
+        // 原型模式下忽略登录检查，继续处理
+        chatStore.updateChatData({ currentMessageId: '', showHandleRobot: false })
+        console.log('原型模式：跳过登录验证')
+        return
+      }
+      
+      // 未登录处理（非原型模式）
       chatStore.updateChatData({ currentMessageId: '', showHandleRobot: false })
-      Message.warning(replay.msg)
-      const path = useUserStore().show3D ? '/login2' : '/login'
-      router.push({ path })
+      Message.error(replay.msg || '服务器错误，请重试。')
     } else {
       chatStore.updateChatData({ currentMessageId: '', showHandleRobot: false })
       Message.warning(replay.msg)

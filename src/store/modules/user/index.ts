@@ -62,17 +62,25 @@ const useUserStore = defineStore('user', {
     setChatModelList(chatModelList: ChatModelType[]) {
       this.chatModelList = chatModelList
     },
-    setUserInfo(userInfo: UserState) {
-      this.userId = userInfo.userId
-      this.account = userInfo.account
-      this.realName = userInfo.realName
-      this.phone = userInfo.phone
-      this.avatar = userInfo.avatar
-      this.roleId = userInfo.roleId
-      this.roleName = userInfo.roleName
-      this.companyId = userInfo.companyId
-      this.companyName = userInfo.companyName
-      this.permissionList = userInfo.permissionList
+    setUserInfo(userInfo: any) {
+      this.userId = userInfo.userId || userInfo.id || this.userId
+      this.account = userInfo.account || userInfo.name || this.account
+      this.realName = userInfo.realName || userInfo.name || this.realName
+      this.phone = userInfo.phone || this.phone
+      this.avatar = userInfo.avatar || this.avatar
+      this.roleId = userInfo.roleId || this.roleId
+      this.roleName = userInfo.roleName || this.roleName
+      this.companyId = userInfo.companyId || this.companyId
+      this.companyName = userInfo.companyName || this.companyName
+      this.permissionList = userInfo.permissionList || this.permissionList
+      this.token = userInfo.token || this.token
+      
+      if (userInfo.token || userInfo.id) {
+        this.isLogin = true
+        if (userInfo.token) {
+          localStorage.setItem('token', userInfo.token)
+        }
+      }
     },
     setRobotList(robotList: any) {
       this.robotList = robotList
@@ -80,22 +88,62 @@ const useUserStore = defineStore('user', {
     setPermissionList(permissionList: any) {
       this.permissionList = permissionList
     },
+    
+    initDefaultUser() {
+      if (!this.isLogin) {
+        this.setUserInfo({
+          id: 'demo-user',
+          name: '演示用户',
+          token: 'demo-token-123456',
+          account: 'demo',
+          realName: '演示用户',
+          phone: '13800138000',
+          roleId: 'admin',
+          roleName: '管理员',
+          companyId: 'demo-company',
+          companyName: '演示公司'
+        })
+        
+        this.setPermissionList(['1', '2', '3', '4', '5', '6', 'admin', 'superAdmin'])
+        
+        this.setRobotList([
+          { id: '1', name: '安全助手', avatar: 'aq' },
+          { id: '2', name: '漏洞分析师', avatar: 'hg' },
+          { id: '3', name: '资产管家', avatar: 'zc' },
+          { id: '4', name: '威胁猎手', avatar: 'jqg' },
+          { id: '5', name: '报告专家', avatar: 'sj' },
+          { id: '6', name: '合规顾问', avatar: 'yw' }
+        ])
+        
+        this.setEnterpriseInfo({
+          name: 'AI安全管理系统',
+          logo: '',
+          icon: ''
+        })
+      }
+    },
 
-    // Logout
     async logout() {
-      const res = await request
-        .Get('/auth/logout')
-        .send(true)
-        .then((res: any) => {
-          if (res && res.code === 1) {
+      try {
+        const res = await request
+          .Get('/auth/logout')
+          .send(true)
+          .then((res: any) => {
+            if (res && res.code === 1) {
+              removeRouteListener()
+              this.reset()
+              return true
+            }
             removeRouteListener()
             this.reset()
             return true
-          }
-          Message.error('登出失败')
-          return false
-        })
-      return res
+          })
+        return res
+      } catch (error) {
+        removeRouteListener()
+        this.reset()
+        return true
+      }
     },
     reset() {
       this.isLogin = false
@@ -112,6 +160,7 @@ const useUserStore = defineStore('user', {
       this.publicKey = ''
       this.permissionList = []
       this.robotList = []
+      localStorage.removeItem('token')
     }
   }
 })

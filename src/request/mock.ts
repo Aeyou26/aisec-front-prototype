@@ -2,6 +2,100 @@ import { defineMock } from '@alova/mock'
 import chatMock from './mock/chat'
 
 export default defineMock({
+  '[POST]/api/user/robot/page': () => {
+    return {
+      code: 1,
+      message: '',
+      data: [
+        {
+          id: '1',
+          name: '安全运维数字人',
+          useScene: '智能问答和安全咨询，7x24小时为您提供专业安全建议',
+          prolog: '您好！我是您的专属安全助手，可以为您解答各种网络安全问题。',
+          avatar: 'aq',
+          img: '/src/assets/images/robot-1.png',
+          abilityList: [
+            { id: '1-1', name: '智能运维', agentId: '1', useScene: '提供专业安全建议' },
+            { id: '1-2', name: '应急响应', agentId: '1', useScene: '分析安全威胁' },
+            { id: '1-3', name: '流量分析', agentId: '1', useScene: '合规性检查' },
+            { id: '1-4', name: '漏洞下发', agentId: '1', useScene: '安全风险评估' }
+          ]
+        },
+        {
+          id: '3',
+          name: '安全分析数字人',
+          useScene: '专业漏洞扫描、分析和修复建议，守护系统安全',
+          prolog: '我专注于漏洞检测与分析，帮助您及时发现并修复安全漏洞。',
+          avatar: 'hg',
+          img: '/src/assets/images/robot-2.png',
+          abilityList: [
+            { id: '3-1', name: '钓鱼邮件', agentId: '3', useScene: '系统漏洞扫描' },
+            { id: '3-2', name: 'WebShell', agentId: '3', useScene: '漏洞风险评级' },
+            { id: '3-3', name: '日志分析', agentId: '3', useScene: '漏洞修复指导' },
+            { id: '3-4', name: '漏洞检测', agentId: '3', useScene: '漏洞趋势分析' }
+          ]
+        },
+        {
+          id: '2',
+          name: '资产监测数字人',
+          useScene: 'IT资产全生命周期管理，让每一项资产都在掌控之中',
+          prolog: '我是您的资产管家，为您提供全面的IT资产管理服务。',
+          avatar: 'zc',
+          img: '/src/assets/images/robot-3.png',
+          abilityList: [
+            { id: '2-1', name: '资产识别', agentId: '2', useScene: 'IT资产盘点' },
+            { id: '2-2', name: '资产报告', agentId: '2', useScene: '资产配置管理' },
+            { id: '2-3', name: '风险监测', agentId: '2', useScene: '资产状态监控' },
+            { id: '2-4', name: '多维报告', agentId: '2', useScene: '资产生命周期管理' }
+          ]
+        },
+        {
+          id: '4',
+          name: '源码审计数字人',
+          useScene: '智能生成各类安全报告，数据可视化呈现',
+          prolog: '我专注于生成专业的安全报告，让数据说话。',
+          avatar: 'sj',
+          img: '/src/assets/images/robot-5.png',
+          abilityList: [
+            { id: '4-1', name: '组件分析', agentId: '4', useScene: '自动生成安全报告' },
+            { id: '4-2', name: '代码分析', agentId: '4', useScene: '安全数据分析' },
+            { id: '4-3', name: '质量检查', agentId: '4', useScene: '数据可视化' },
+            { id: '4-4', name: '合规检查', agentId: '4', useScene: '安全趋势预测' }
+          ]
+        },
+        {
+          id: '5',
+          name: '分类分级数字人',
+          useScene: '企业安全合规检查，确保符合各项安全标准',
+          prolog: '我是合规顾问，帮助您的企业符合各项安全合规要求。',
+          avatar: 'yw',
+          img: '/src/assets/images/robot-6.png',
+          abilityList: [
+            { id: '5-1', name: '数据识别', agentId: '5', useScene: '安全合规审核' },
+            { id: '5-2', name: '分类分级', agentId: '5', useScene: '标准符合性检查' },
+            { id: '5-3', name: '合规评估', agentId: '5', useScene: '合规整改指导' },
+            { id: '5-4', name: '审计报告', agentId: '5', useScene: '合规状态监控' }
+          ]
+        }
+      ]
+    }
+  },
+  '[GET]/api/model/select': () => {
+    return {
+      code: 1,
+      message: '',
+      data: [
+        {
+          id: 1,
+          model_name: 'GPT-4',
+          function_name: '智能对话模型',
+          max_len_input: '8000',
+          url: 'https://api.openai.com/v1/chat/completions',
+          key: 'demo-key'
+        }
+      ]
+    }
+  },
   '[POST]/api/login': () => {
     return { code: 1, message: '', data: { token: '1234567890' } }
   },

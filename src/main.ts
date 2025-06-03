@@ -16,4 +16,8 @@ app.use(pinia)
 app.use(router)
 app.use(directives)
 
+// 原型模式：确保token存在
+localStorage.setItem('token', 'demo-token-123456')
+localStorage.setItem('prototype-mode', 'true')
+
 app.mount('#app')

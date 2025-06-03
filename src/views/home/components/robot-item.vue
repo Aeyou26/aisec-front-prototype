@@ -68,6 +68,11 @@ const router = useRouter()
 const isHover = ref(false)
 // abilityId
 const handleClick = (id?: string) => {
+  // 确保用户在原型模式下始终为登录状态
+  if (!userStore.isLogin) {
+    userStore.toggleLoginStatus(true)
+  }
+  
   // 将机器人id设置为权限
   userStore.setPermissionList([props.item.id])
   chatStore.updateChatData({
@@ -80,26 +85,46 @@ const handleClick = (id?: string) => {
       abilityId: id || ''
     }
   })
+  
   // 根据机器人id设置进入系统路径
   let path = '/chat'
   if (id) {
+    // 点击具体能力标签时，统一跳转到chat页面
     router.push({ path })
     return
   }
+  
+  // 根据数字人类型跳转到对应的专业页面
   switch (props.item.id) {
-    // case '2':
-    //   path = '/security-overview'
-    //   break
+    case '1':
+      // 安全助手 → 通用聊天
+      path = '/chat'
+      break
+    case '2':
+      // 漏洞分析师 → 漏洞管理
+      path = '/loophole'
+      break
     case '3':
-      path = '/'
+      // 资产管家 → 资产管理  
+      path = '/asset'
+      break
+    case '4':
+      // 威胁猎手 → 威胁管理
+      path = '/menace'
       break
     case '5':
-      // path = show3D.value ? '/robot' : '/chat'
-      path = '/robot'
+      // 报告专家 → 报告管理
+      path = '/report'
+      break
+    case '6':
+      // 合规顾问 → 聊天功能（合规咨询）
+      path = '/chat'
       break
     default:
       path = '/chat'
   }
+  
+  console.log(`数字人${props.item.name}跳转到: ${path}`)
   router.push({ path })
 }
 </script>
