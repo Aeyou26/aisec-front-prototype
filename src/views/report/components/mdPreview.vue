@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import useModalVisible from '@/hooks/useModalVisible'
+import { ref, computed, watch } from 'vue'
 import { MdPreview } from 'md-editor-v3'
 import 'md-editor-v3/lib/preview.css'
 import request from '@/request'
@@ -7,7 +7,10 @@ import * as pdfjsLib from 'pdfjs-dist'
 import 'pdfjs-dist/web/pdf_viewer.css'
 import { renderAsync } from 'docx-preview'
 
-const { visible, initData, openModal, closeModal } = useModalVisible<any>()
+const props = defineProps<{
+  reportData?: any
+}>()
+
 const data = ref<string>('')
 const loading = ref<boolean>(false)
 const fileUrl = ref<string>('')
@@ -45,64 +48,39 @@ async function renderPdf(url: string, container: HTMLElement) {
 
 // 计算当前文件类型
 const fileType = computed(() => {
-  if (!initData.value || !initData.value.reportName) {
-    return 'md'
+  if (!props.reportData || !props.reportData.reportName) {
+    return 'markdown'
   }
-  const fileName = initData.value.reportName.toLowerCase()
+  const fileName = props.reportData.reportName.toLowerCase()
   if (fileName.endsWith('.pdf')) {
     return 'pdf'
   }
   if (fileName.endsWith('.docx') || fileName.endsWith('.doc')) {
     return 'docx'
   }
-  return 'md'
+  return 'markdown'
 })
 
-async function onBeforeOpen() {
-  if (initData) {
-    // 获取文件URL用于PDF和Word预览
-    if (fileType.value !== 'md') {
-      fileUrl.value = `/api/common/download/aisec-file/${initData.value.path}`
-    }
-    if (fileType.value === 'md') {
-      loading.value = true
-      request
-        .Get<any>(`/user/report/${initData.value.id}`)
-        .then((res) => {
-          if (res.data) {
-            data.value = res.data
-          }
-        })
-        .finally(() => {
-          loading.value = false
-        })
-    } else if (fileType.value === 'docx') {
-      loading.value = true
-      try {
-        const response = await fetch(fileUrl.value)
-        const blob = await response.blob()
-        if (docxViewer.value) {
-          await renderAsync(blob, docxViewer.value)
-        }
-      } catch (error) {
-        console.error('Error converting Word document:', error)
-      } finally {
-        loading.value = false
+// 简化的数据加载
+const loadData = async () => {
+  if (props.reportData && fileType.value === 'markdown') {
+    loading.value = true
+    try {
+      const res = await request.Get<any>(`/user/report/${props.reportData.id}`)
+      if (res.data) {
+        data.value = res.data
       }
-    } else if (fileType.value === 'pdf') {
-      loading.value = true
-      try {
-        if (pdfViewer.value) {
-          await renderPdf(fileUrl.value, pdfViewer.value)
-        }
-      } catch (error) {
-        console.error('Error loading PDF:', error)
-      } finally {
-        loading.value = false
-      }
+    } catch (error) {
+      console.error('加载报告数据失败:', error)
+      data.value = '加载失败'
+    } finally {
+      loading.value = false
     }
   }
 }
+
+// 监听props变化
+watch(() => props.reportData, loadData, { immediate: true })
 
 function onClose() {
   data.value = ''
@@ -113,51 +91,85 @@ function onClose() {
   if (pdfViewer.value) {
     pdfViewer.value.innerHTML = ''
   }
-  closeModal()
 }
 
 defineExpose({
-  openModal
+  loadData
 })
 </script>
 
 <template>
-  <a-modal
-    v-model:visible="visible"
-    title="报告预览"
-    title-align="start"
-    :width="1000"
-    :mask-closable="false"
-    :footer="false"
-    :fullscreen="isFullscreen"
-    @before-open="onBeforeOpen"
-    @cancel="onClose"
-  >
-    <template #title>
-      <div class="flex items-center justify-between w-full pr-32 gap-16">
-        <div>报告预览</div>
-        <a-tooltip :content="isFullscreen ? '退出全屏' : '全屏'">
-          <icon-fullscreen v-if="!isFullscreen" class="cursor-pointer" @click="isFullscreen = true" />
-          <icon-fullscreen-exit v-else class="cursor-pointer" @click="isFullscreen = false" />
-        </a-tooltip>
+  <div>
+    <!-- 简化的预览界面 -->
+    <div class="preview-container">
+      <div v-if="fileType === 'markdown'" class="markdown-preview">
+        <MdPreview 
+          :model-value="data" 
+          :theme="'light'"
+          preview-theme="default"
+          code-theme="atom"
+        />
       </div>
-    </template>
-    <a-spin :loading="loading" dot class="!w-full">
-      <!-- Markdown预览 -->
-      <MdPreview v-if="fileType === 'md' && data" ref="mdPreviewRef" :model-value="data" class="markdown-content" />
-
-      <!-- PDF预览 -->
-      <div v-if="fileType === 'pdf'" ref="pdfViewer" style="min-height: 500px" />
-
-      <!-- Word预览 -->
-      <div v-if="fileType === 'docx'" ref="docxViewer" style="min-height: 500px" class="docx-preview" />
-
-      <Empty v-if="!data && !pdfViewer && !docxViewer" description="暂无数据/已被删除" />
-    </a-spin>
-  </a-modal>
+      
+      <!-- 其他文件类型显示简化消息 -->
+      <div v-else class="file-preview-placeholder">
+        <div class="placeholder-content">
+          <h3>文件预览（原型模式）</h3>
+          <p>文件类型：{{ fileType }}</p>
+          <p>在原型版本中，仅支持Markdown预览</p>
+          <pre v-if="data" class="file-content">{{ data }}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style lang="less" scoped>
+.preview-container {
+  padding: 16px;
+  background: #fff;
+  border-radius: 8px;
+  min-height: 400px;
+}
+
+.markdown-preview {
+  width: 100%;
+}
+
+.file-preview-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.placeholder-content {
+  text-align: center;
+  padding: 32px;
+}
+
+.placeholder-content h3 {
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.placeholder-content p {
+  color: #999;
+  margin-bottom: 8px;
+}
+
+.file-content {
+  max-height: 300px;
+  overflow-y: auto;
+  text-align: left;
+  background: #f5f5f5;
+  padding: 16px;
+  border-radius: 4px;
+  margin-top: 16px;
+}
+
 .markdown-content {
   min-height: 500px;
   overflow-wrap: break-word;
