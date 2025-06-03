@@ -10,7 +10,6 @@ import Icons from 'unplugin-icons/vite'
 import { vitePluginForArco } from '@arco-plugins/vite-vue'
 import { AutoImport, SvgIcon, TreeShake, ArcoStyleImportPlugin } from './plugins'
 import Layouts from 'vite-plugin-vue-layouts'
-import removeConsole from 'vite-plugin-remove-console'
 
 export default defineConfig(({ mode }) => {
   // 加载 envDir 中的 .env 文件。默认情况下只有前缀为 VITE_ 会被加载，除非更改了 prefixes 配置。
@@ -68,8 +67,7 @@ export default defineConfig(({ mode }) => {
       MetaLayouts({
         importMode: 'async'
       }),
-      vitePluginForArco(),
-      removeConsole()
+      vitePluginForArco()
     ]
   }
 })
